@@ -1,14 +1,27 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from math import pow
+from io import StringIO
 
 
 def main():
-    x = np.array([0,1,2])
-    y = np.array([2,3,2])
+    x, y = set_data()
     v = vandermonde_matrix(x, y)
     ix, fix = interpolation_polynomial(v, y)
     graph(x, y, ix, fix)
+
+
+def set_data():
+    # obtener coordenadas de las abscisas
+    absc = open("abscisas.txt", "r")
+    x = np.array(np.genfromtxt(StringIO(absc.read()), delimiter=","))
+    absc.close()
+    # obtener coordenadas de las ordenadas
+    orde = open("ordenadas.txt", "r")
+    y = np.array(np.genfromtxt(StringIO(orde.read()), delimiter=","))
+    orde.close()
+    
+    return x, y
 
 
 def vandermonde_matrix(x, y):
@@ -24,7 +37,7 @@ def vandermonde_matrix(x, y):
 
 def interpolation_polynomial(v, y):
     a = np.linalg.solve(v, y) # Conjunto de soluciones
-    x = np.linspace(0, 2, num=100) # valores en x para reemplazar
+    x = np.linspace(-30, 30, num=100) # valores en x para reemplazar
     pol = [] # polinomio
     for j in range(a.size):
         pol.append(a[j]*x**j)
@@ -38,8 +51,8 @@ def graph(x, y, ix, fix):
     plt.xlabel('x')
     plt.ylabel('y')
     # Polinomio interpolante
-    plt.plot(x, y, 'bo', label="puntos")
-    plt.plot(ix, fix, label="polinomio", color="red")
+    plt.plot(x, y, 'ro', label="puntos")
+    plt.plot(ix, fix, label="polinomio", color="green")
     plt.show()
 
 
